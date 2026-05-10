@@ -21,13 +21,12 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] LayerMask mask;
     Target target = new Target(TargetType.none, new RaycastHit());
-    bool canShoot = true;
-    [SerializeField] float AttackRange = 5f;
-    [SerializeField] float Cooldown = 0.5f;
 
     NavMeshAgent agent;
     InputActions input;
     InputAction m_interactAction;
+    InputAction m_saveAction;
+    InputAction m_resetAction;
 
     InputAction[] m_switchWeaponAction = new InputAction[3];
 
@@ -36,6 +35,10 @@ public class PlayerController : MonoBehaviour
     int currentWeaponPosNum;
 
     Vector3 MousePosition = new Vector3();
+
+    [SerializeField] GameData gameData;
+
+    public float baseSpeed = 5f;
 
     void Awake()
     {
@@ -46,10 +49,19 @@ public class PlayerController : MonoBehaviour
         m_interactAction = input.Main.Interact;
 
         m_switchWeaponAction = new InputAction[3] { input.Main.Weapon1, input.Main.Weapon2, input.Main.Weapon3 };
+
+        m_saveAction = input.Main.SaveAndQuit;
+        m_resetAction = input.Main.ResetGame;
     }
 
     private void Start()
     {
+        EnemyController[] enemies = FindObjectsOfType<EnemyController>();
+
+        SaveSystem.Load(gameData, gameObject, enemies);
+
+        agent.speed = baseSpeed * gameData.playerSpeedMultiplier;
+
         for (int i = 0; i < Weapons.Length; i++)
         {
             if (i == 0)
@@ -103,6 +115,16 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+
+        if (m_saveAction.WasPressedThisFrame())
+        {
+            SaveAndQuit();
+        }
+
+        if (m_resetAction.WasPressedThisFrame())
+        {
+            ResetGame();
+        }
     }
 
     void Move()
@@ -140,5 +162,31 @@ public class PlayerController : MonoBehaviour
         }
         Gizmos.color = new Color(1f, 0f, 0f, 1f);
         if (currentWeapon != null) Gizmos.DrawWireSphere(transform.position, currentWeapon.GetRange());
+    }
+
+    void SaveAndQuit()
+    {
+        gameData.playerPosition = transform.position;
+
+        EnemyController[] enemies = FindObjectsOfType<EnemyController>();
+
+        SaveSystem.Save(gameData, enemies);
+
+        Debug.Log("Game Saved!");
+
+        Application.Quit();
+    }
+
+    void ResetGame()
+    {
+        SaveSystem.DeleteSave();
+
+        gameData.ResetData();
+
+        Debug.Log("Game Reset");
+
+        UnityEngine.SceneManagement.SceneManager.LoadScene(
+            UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex
+        );
     }
 }

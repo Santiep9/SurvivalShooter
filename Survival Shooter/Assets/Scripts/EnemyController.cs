@@ -12,9 +12,16 @@ public class EnemyController : MonoBehaviour
 
     float maxHealth;
     float curHealth;
+    public float baseSpeed = 3.5f;
+
+    [SerializeField] GameData gameData;
 
     void Start()
     {
+        agent = GetComponent<NavMeshAgent>();
+
+        agent.speed = baseSpeed * gameData.enemySpeedMultiplier;
+
         maxHealth = data.GetMaxHealth();
         curHealth = maxHealth;
 

@@ -126,6 +126,24 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SaveAndQuit"",
+                    ""type"": ""Button"",
+                    ""id"": ""4939d24e-da4b-4ee1-a823-36c39f0786f3"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ResetGame"",
+                    ""type"": ""Button"",
+                    ""id"": ""23b621cf-2821-4d74-9896-6841f2b4d694"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -172,6 +190,28 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Weapon3"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8ce2732d-81b2-47dd-b0f1-785b137522cc"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SaveAndQuit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6033673a-527e-4e09-bd33-6b3f81505ac9"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ResetGame"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -184,6 +224,8 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         m_Main_Weapon1 = m_Main.FindAction("Weapon1", throwIfNotFound: true);
         m_Main_Weapon2 = m_Main.FindAction("Weapon2", throwIfNotFound: true);
         m_Main_Weapon3 = m_Main.FindAction("Weapon3", throwIfNotFound: true);
+        m_Main_SaveAndQuit = m_Main.FindAction("SaveAndQuit", throwIfNotFound: true);
+        m_Main_ResetGame = m_Main.FindAction("ResetGame", throwIfNotFound: true);
     }
 
     ~@InputActions()
@@ -268,6 +310,8 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Main_Weapon1;
     private readonly InputAction m_Main_Weapon2;
     private readonly InputAction m_Main_Weapon3;
+    private readonly InputAction m_Main_SaveAndQuit;
+    private readonly InputAction m_Main_ResetGame;
     /// <summary>
     /// Provides access to input actions defined in input action map "Main".
     /// </summary>
@@ -295,6 +339,14 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Main/Weapon3".
         /// </summary>
         public InputAction @Weapon3 => m_Wrapper.m_Main_Weapon3;
+        /// <summary>
+        /// Provides access to the underlying input action "Main/SaveAndQuit".
+        /// </summary>
+        public InputAction @SaveAndQuit => m_Wrapper.m_Main_SaveAndQuit;
+        /// <summary>
+        /// Provides access to the underlying input action "Main/ResetGame".
+        /// </summary>
+        public InputAction @ResetGame => m_Wrapper.m_Main_ResetGame;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -333,6 +385,12 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @Weapon3.started += instance.OnWeapon3;
             @Weapon3.performed += instance.OnWeapon3;
             @Weapon3.canceled += instance.OnWeapon3;
+            @SaveAndQuit.started += instance.OnSaveAndQuit;
+            @SaveAndQuit.performed += instance.OnSaveAndQuit;
+            @SaveAndQuit.canceled += instance.OnSaveAndQuit;
+            @ResetGame.started += instance.OnResetGame;
+            @ResetGame.performed += instance.OnResetGame;
+            @ResetGame.canceled += instance.OnResetGame;
         }
 
         /// <summary>
@@ -356,6 +414,12 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @Weapon3.started -= instance.OnWeapon3;
             @Weapon3.performed -= instance.OnWeapon3;
             @Weapon3.canceled -= instance.OnWeapon3;
+            @SaveAndQuit.started -= instance.OnSaveAndQuit;
+            @SaveAndQuit.performed -= instance.OnSaveAndQuit;
+            @SaveAndQuit.canceled -= instance.OnSaveAndQuit;
+            @ResetGame.started -= instance.OnResetGame;
+            @ResetGame.performed -= instance.OnResetGame;
+            @ResetGame.canceled -= instance.OnResetGame;
         }
 
         /// <summary>
@@ -424,5 +488,19 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnWeapon3(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SaveAndQuit" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSaveAndQuit(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ResetGame" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnResetGame(InputAction.CallbackContext context);
     }
 }

@@ -148,3 +148,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   data: {fileID: 11400000, guid: e03ba7b191e06c94393784b34c292d9b, type: 2}
+  gameData: {fileID: 11400000, guid: a2506ac2a66a5f0459c636dd336f9f88, type: 2}
