@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10f5d8af67f0a794c97e6c14f78ac7c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: {fileID: 0}
-  Enemy: {fileID: 0}
+  Player: {fileID: 2107409826236812522, guid: f3783e715fbfb624f8fd7bf14ba4c4d2, type: 3}
+  Enemy: {fileID: 6153709911993302857, guid: 1170332ba4725144d8063eb8303fcf00, type: 3}
   SpawnRange: 2
   SpawnCooldown: 1

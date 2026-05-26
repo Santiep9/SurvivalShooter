@@ -146,6 +146,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9032c94b5bcb44647b3a274e3ba19999, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
+  target: {fileID: 2107409826236812522, guid: f3783e715fbfb624f8fd7bf14ba4c4d2, type: 3}
   data: {fileID: 11400000, guid: e03ba7b191e06c94393784b34c292d9b, type: 2}
+  baseSpeed: 3.5
   gameData: {fileID: 11400000, guid: a2506ac2a66a5f0459c636dd336f9f88, type: 2}
