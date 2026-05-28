@@ -1,9 +1,18 @@
 using System.Collections;
+using System.Net;
 using UnityEngine;
 
 public class WeaponController : MonoBehaviour, Iweapon
 {
-    [SerializeField] WeaponData weaponData;
+    [SerializeField] WeaponData minigunData;
+    [SerializeField] WeaponData rocketData;
+
+    [SerializeField] GameObject minigunTracerPrefab;
+    [SerializeField] GameObject rocketTracerPrefab;
+
+    WeaponData currentData;
+
+    bool rocketMode = false;
 
     [SerializeField] GameObject user;
     [SerializeField] Transform barrel;
@@ -13,38 +22,50 @@ public class WeaponController : MonoBehaviour, Iweapon
 
     void Awake()
     {
-        curAmmo = weaponData.maxAmmo;
+        currentData = minigunData;
+        curAmmo = currentData.maxAmmo;
     }
 
-    public void Shoot(EnemyController target) 
-    { 
-        if (canShoot == false) return;
+    public void Shoot(EnemyController target)
+    {
+        if (!canShoot || target == null) return;
+
+        Vector3 origin = barrel.position;
+        Vector3 direction = (target.transform.position - origin).normalized;
+
+        LayerMask shootMask = ~LayerMask.GetMask("Player");
 
         RaycastHit hit;
-        Vector3 origin = barrel.position;
-        Vector3 direction = user.transform.forward;
         Vector3 endPoint;
 
-        if (Physics.Raycast(origin, direction, out hit, weaponData.range))
+        if (Physics.Raycast(origin, direction, out hit, currentData.range, shootMask))
         {
             endPoint = hit.point;
 
-            if (hit.transform.GetComponent<EnemyController>())
+            EnemyController enemy = hit.transform.GetComponentInParent<EnemyController>();
+
+            if (enemy != null)
             {
-                hit.transform.GetComponent<EnemyController>().GetDamaged(weaponData.damage);
+                enemy.GetDamaged(currentData.damage);
             }
         }
         else
         {
-            endPoint = origin + direction * weaponData.range;
+            endPoint = origin + direction * currentData.range;
         }
 
-        --curAmmo;
+        GameObject tracerPrefab = rocketMode ? rocketTracerPrefab : minigunTracerPrefab;
 
-        Debug.Log("Ammo: " + curAmmo);
+        GameObject tracer = Instantiate(tracerPrefab, barrel.position, Quaternion.identity);
 
-        if (curAmmo == 0) Reload();
-        else StartCoroutine(WaitFireRate());
+        tracer.GetComponent<BulletTracer>().Init(endPoint);
+
+        curAmmo--;
+
+        if (curAmmo <= 0)
+            Reload();
+        else
+            StartCoroutine(WaitFireRate());
     }
 
     public void Reload()
@@ -53,25 +74,37 @@ public class WeaponController : MonoBehaviour, Iweapon
         StartCoroutine(Reloading());
     }
 
-    public float GetRange() { return weaponData.range; }
+    public float GetRange()
+    {
+        if (currentData == null)
+            return 0;
+
+        return currentData.range;
+    }
 
     public void SwitchWeapon()
     {
+        rocketMode = !rocketMode;
 
+        currentData = rocketMode ? rocketData : minigunData;
+
+        curAmmo = currentData.maxAmmo;
+
+        Debug.Log(rocketMode ? "Rocket Launcher" : "Minigun");
     }
 
     IEnumerator WaitFireRate()
     {
         canShoot = false;
-        yield return new WaitForSeconds(weaponData.fireRate);
+        yield return new WaitForSeconds(currentData.fireRate);
         canShoot = true;
     }
 
     IEnumerator Reloading()
     {
         Debug.Log("Reloading...");
-        yield return new WaitForSeconds(weaponData.reloadTime);
-        curAmmo = weaponData.maxAmmo;
+        yield return new WaitForSeconds(currentData.reloadTime);
+        curAmmo = currentData.maxAmmo;
         canShoot = true;
         Debug.Log("Reloaded!");
     }

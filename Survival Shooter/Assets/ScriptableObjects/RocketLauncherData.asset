@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1bc52db7dd5240b49942aa0f2c3bd8a8, type: 3}
-  m_Name: RevolverData
+  m_Name: RocketLauncherData
   m_EditorClassIdentifier: 
-  damage: 100
-  range: 4
-  maxAmmo: 6
-  reloadTime: 2
-  fireRate: 0.2
+  damage: 40
+  range: 15
+  maxAmmo: 50
+  reloadTime: 0
+  fireRate: 0.8

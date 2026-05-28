@@ -27,12 +27,16 @@ public class PlayerController : MonoBehaviour
     InputAction m_interactAction;
     InputAction m_saveAction;
     InputAction m_resetAction;
+    InputAction switchWeaponAction;
 
-    InputAction[] m_switchWeaponAction = new InputAction[3];
+    InputAction m_switchWeaponAction;
+    InputAction m_slowShotAction;
+    InputAction m_trapAction;
 
-    [SerializeField] GameObject[] Weapons = new GameObject[3];
-    Iweapon currentWeapon;
-    int currentWeaponPosNum;
+    [SerializeField] WeaponController currentWeapon;
+    [SerializeField] Transform barrel;
+    [SerializeField] GameObject slowProjectilePrefab;
+    [SerializeField] GameObject trapPrefab;
 
     Vector3 MousePosition = new Vector3();
 
@@ -48,32 +52,23 @@ public class PlayerController : MonoBehaviour
 
         m_interactAction = input.Main.Interact;
 
-        m_switchWeaponAction = new InputAction[3] { input.Main.Weapon1, input.Main.Weapon2, input.Main.Weapon3 };
+        m_switchWeaponAction = input.Main.SwitchWeapon;
+        m_slowShotAction = input.Main.SlowShot;
+        m_trapAction = input.Main.Trap;
 
         m_saveAction = input.Main.SaveAndQuit;
         m_resetAction = input.Main.ResetGame;
+
+        switchWeaponAction = input.Main.SwitchWeapon;
     }
 
     private void Start()
     {
-        EnemyController[] enemies = FindObjectsOfType<EnemyController>();
+        EnemyController[] enemies = FindObjectsByType<EnemyController>(FindObjectsSortMode.None);
 
         SaveSystem.Load(gameData, gameObject, enemies);
 
         agent.speed = baseSpeed * gameData.playerSpeedMultiplier;
-
-        for (int i = 0; i < Weapons.Length; i++)
-        {
-            if (i == 0)
-            {
-                currentWeapon = Weapons[i].GetComponent<Iweapon>();
-                currentWeaponPosNum = i;
-            }
-            else
-            {
-                Weapons[i].SetActive(false);
-            }
-        }
     }
 
     void Update()
@@ -83,37 +78,58 @@ public class PlayerController : MonoBehaviour
             Move();
         }
 
+        if (m_switchWeaponAction.WasPressedThisFrame())
+        {
+            currentWeapon.SwitchWeapon();
+        }
+
+        if (m_slowShotAction.WasPressedThisFrame())
+        {
+            Instantiate(slowProjectilePrefab, barrel.position, transform.rotation);
+        }
+
+        if (m_trapAction.WasPressedThisFrame())
+        {
+            Instantiate(trapPrefab, transform.position, Quaternion.identity);
+        }
+
         switch (target.Type)
         {
             case TargetType.enemy:
+
+                if (target.Hit.transform == null)
+                {
+                    target = new Target(TargetType.none, new RaycastHit());
+
+                    agent.isStopped = false;
+                    break;
+                }
+
                 agent.destination = target.Hit.transform.position;
+
                 float distance = Vector3.Distance(transform.position, agent.destination);
+
                 if (distance <= currentWeapon.GetRange())
                 {
                     agent.isStopped = true;
-                    transform.LookAt(agent.destination);
-                    currentWeapon.Shoot(target.Hit.transform.GetComponent<EnemyController>());
+
+                    Vector3 lookPos = target.Hit.transform.position;
+
+                    lookPos.y = transform.position.y;
+
+                    transform.LookAt(lookPos);
+
+                    EnemyController enemy = target.Hit.transform.GetComponentInParent<EnemyController>();
+
+                    if (enemy != null)
+                    {
+                        currentWeapon.Shoot(enemy);
+                    }
                 }
                 break;
             case TargetType.position:
             default:
                 break;
-        }
-
-        for (int i = 0; i < m_switchWeaponAction.Length; i++)
-        {
-            if (m_switchWeaponAction[i].WasPressedThisFrame())
-            {
-                if (Weapons[i] & currentWeapon != Weapons[i].GetComponent<Iweapon>())
-                {
-                    Weapons[currentWeaponPosNum].SetActive(false);
-                    Weapons[i].SetActive(true);
-                    currentWeapon = Weapons[i].GetComponent<Iweapon>();
-                    currentWeapon.SwitchWeapon();
-                    currentWeaponPosNum = i;
-                    break;
-                }
-            }
         }
 
         if (m_saveAction.WasPressedThisFrame())
@@ -132,19 +148,27 @@ public class PlayerController : MonoBehaviour
         MousePosition = Mouse.current.position.value;
 
         RaycastHit hit;
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(MousePosition), out hit, 100, mask))
+        if (Physics.Raycast(
+            Camera.main.ScreenPointToRay(MousePosition),
+            out hit,
+            100,
+            mask))
         {
-            string LayerName = LayerMask.LayerToName(hit.transform.gameObject.layer);
+            Debug.Log("Hit: " + hit.transform.name);
+
+            string LayerName =
+                LayerMask.LayerToName(hit.transform.gameObject.layer);
+
+            Debug.Log("Layer: " + LayerName);
 
             switch (LayerName)
             {
                 case "Enemy":
                     target = new Target(TargetType.enemy, hit);
                     break;
+
                 case "Floor":
                     target = new Target(TargetType.position, hit);
-                    break;
-                default:
                     break;
             }
 
@@ -155,20 +179,24 @@ public class PlayerController : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        if (target.Type != TargetType.none)
+        if (agent != null && target.Type != TargetType.none)
         {
-            Gizmos.color = new Color(1f, 1f, 0f, 1f);
+            Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(agent.destination, 0.5f);
         }
-        Gizmos.color = new Color(1f, 0f, 0f, 1f);
-        if (currentWeapon != null) Gizmos.DrawWireSphere(transform.position, currentWeapon.GetRange());
+
+        if (currentWeapon != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, currentWeapon.GetRange());
+        }
     }
 
     void SaveAndQuit()
     {
         gameData.playerPosition = transform.position;
 
-        EnemyController[] enemies = FindObjectsOfType<EnemyController>();
+        EnemyController[] enemies = FindObjectsByType<EnemyController>(FindObjectsSortMode.None);
 
         SaveSystem.Save(gameData, enemies);
 

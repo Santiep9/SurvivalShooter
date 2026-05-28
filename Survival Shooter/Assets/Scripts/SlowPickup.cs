@@ -28,8 +28,7 @@ public class SlowPickup : MonoBehaviour
 
                 gameData.enemySpeedMultiplier = slowMultiplier;
 
-                EnemyController[] enemies =
-                    FindObjectsOfType<EnemyController>();
+                EnemyController[] enemies = FindObjectsByType<EnemyController>(FindObjectsSortMode.None);
 
                 foreach (EnemyController enemy in enemies)
                 {

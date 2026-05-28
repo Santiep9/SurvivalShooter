@@ -144,6 +144,42 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CameraToggle"",
+                    ""type"": ""Button"",
+                    ""id"": ""98f10c36-c1b7-4062-b69b-ceaeadf93877"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SwitchWeapon"",
+                    ""type"": ""Button"",
+                    ""id"": ""ad815ec1-6c58-4780-b02a-72fd4ce3c0e4"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SlowShot"",
+                    ""type"": ""Button"",
+                    ""id"": ""aff234d4-4e7d-4c7b-87e2-e35ea411ffac"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Trap"",
+                    ""type"": ""Button"",
+                    ""id"": ""062fe947-0aa9-49de-bd07-03cbe9d8fc38"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -212,6 +248,50 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""action"": ""ResetGame"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bc6b2ba2-dabb-4a6a-bbc5-cb281c87dc4d"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraToggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6bd97b13-c210-42a6-9006-e6dc32d1af20"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SwitchWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8de8618d-e3bd-45b6-9e82-76c81a3891fe"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SlowShot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""27909e99-55d4-4e91-a821-5fbed1099bee"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Trap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -226,6 +306,10 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         m_Main_Weapon3 = m_Main.FindAction("Weapon3", throwIfNotFound: true);
         m_Main_SaveAndQuit = m_Main.FindAction("SaveAndQuit", throwIfNotFound: true);
         m_Main_ResetGame = m_Main.FindAction("ResetGame", throwIfNotFound: true);
+        m_Main_CameraToggle = m_Main.FindAction("CameraToggle", throwIfNotFound: true);
+        m_Main_SwitchWeapon = m_Main.FindAction("SwitchWeapon", throwIfNotFound: true);
+        m_Main_SlowShot = m_Main.FindAction("SlowShot", throwIfNotFound: true);
+        m_Main_Trap = m_Main.FindAction("Trap", throwIfNotFound: true);
     }
 
     ~@InputActions()
@@ -312,6 +396,10 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Main_Weapon3;
     private readonly InputAction m_Main_SaveAndQuit;
     private readonly InputAction m_Main_ResetGame;
+    private readonly InputAction m_Main_CameraToggle;
+    private readonly InputAction m_Main_SwitchWeapon;
+    private readonly InputAction m_Main_SlowShot;
+    private readonly InputAction m_Main_Trap;
     /// <summary>
     /// Provides access to input actions defined in input action map "Main".
     /// </summary>
@@ -347,6 +435,22 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Main/ResetGame".
         /// </summary>
         public InputAction @ResetGame => m_Wrapper.m_Main_ResetGame;
+        /// <summary>
+        /// Provides access to the underlying input action "Main/CameraToggle".
+        /// </summary>
+        public InputAction @CameraToggle => m_Wrapper.m_Main_CameraToggle;
+        /// <summary>
+        /// Provides access to the underlying input action "Main/SwitchWeapon".
+        /// </summary>
+        public InputAction @SwitchWeapon => m_Wrapper.m_Main_SwitchWeapon;
+        /// <summary>
+        /// Provides access to the underlying input action "Main/SlowShot".
+        /// </summary>
+        public InputAction @SlowShot => m_Wrapper.m_Main_SlowShot;
+        /// <summary>
+        /// Provides access to the underlying input action "Main/Trap".
+        /// </summary>
+        public InputAction @Trap => m_Wrapper.m_Main_Trap;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -391,6 +495,18 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @ResetGame.started += instance.OnResetGame;
             @ResetGame.performed += instance.OnResetGame;
             @ResetGame.canceled += instance.OnResetGame;
+            @CameraToggle.started += instance.OnCameraToggle;
+            @CameraToggle.performed += instance.OnCameraToggle;
+            @CameraToggle.canceled += instance.OnCameraToggle;
+            @SwitchWeapon.started += instance.OnSwitchWeapon;
+            @SwitchWeapon.performed += instance.OnSwitchWeapon;
+            @SwitchWeapon.canceled += instance.OnSwitchWeapon;
+            @SlowShot.started += instance.OnSlowShot;
+            @SlowShot.performed += instance.OnSlowShot;
+            @SlowShot.canceled += instance.OnSlowShot;
+            @Trap.started += instance.OnTrap;
+            @Trap.performed += instance.OnTrap;
+            @Trap.canceled += instance.OnTrap;
         }
 
         /// <summary>
@@ -420,6 +536,18 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @ResetGame.started -= instance.OnResetGame;
             @ResetGame.performed -= instance.OnResetGame;
             @ResetGame.canceled -= instance.OnResetGame;
+            @CameraToggle.started -= instance.OnCameraToggle;
+            @CameraToggle.performed -= instance.OnCameraToggle;
+            @CameraToggle.canceled -= instance.OnCameraToggle;
+            @SwitchWeapon.started -= instance.OnSwitchWeapon;
+            @SwitchWeapon.performed -= instance.OnSwitchWeapon;
+            @SwitchWeapon.canceled -= instance.OnSwitchWeapon;
+            @SlowShot.started -= instance.OnSlowShot;
+            @SlowShot.performed -= instance.OnSlowShot;
+            @SlowShot.canceled -= instance.OnSlowShot;
+            @Trap.started -= instance.OnTrap;
+            @Trap.performed -= instance.OnTrap;
+            @Trap.canceled -= instance.OnTrap;
         }
 
         /// <summary>
@@ -502,5 +630,33 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnResetGame(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "CameraToggle" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnCameraToggle(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SwitchWeapon" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSwitchWeapon(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SlowShot" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSlowShot(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Trap" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnTrap(InputAction.CallbackContext context);
     }
 }
