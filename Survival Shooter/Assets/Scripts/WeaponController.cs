@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Net;
 using UnityEngine;
 
 public class WeaponController : MonoBehaviour, Iweapon
@@ -10,25 +9,40 @@ public class WeaponController : MonoBehaviour, Iweapon
     [SerializeField] GameObject minigunTracerPrefab;
     [SerializeField] GameObject rocketTracerPrefab;
 
+    [SerializeField] GameObject user;
+    [SerializeField] Transform barrel;
+    [SerializeField] Animation anim;
+
     WeaponData currentData;
 
     bool rocketMode = false;
 
-    [SerializeField] GameObject user;
-    [SerializeField] Transform barrel;
-
     int curAmmo;
     bool canShoot = true;
 
+    public bool IsPlayingAction { get; private set; }
+
     void Awake()
     {
+        anim = GetComponent<Animation>();
+
         currentData = minigunData;
         curAmmo = currentData.maxAmmo;
     }
 
     public void Shoot(EnemyController target)
     {
-        if (!canShoot || target == null) return;
+        if (!canShoot || target == null)
+            return;
+
+        IsPlayingAction = true;
+
+        if (rocketMode)
+            anim.Play("Jinx_Rlauncher_attack1_anm");
+        else
+            anim.Play("Attack1");
+
+        StartCoroutine(FinishAttack(0.5f));
 
         Vector3 origin = barrel.position;
         Vector3 direction = (target.transform.position - origin).normalized;
@@ -56,7 +70,7 @@ public class WeaponController : MonoBehaviour, Iweapon
 
         GameObject tracerPrefab = rocketMode ? rocketTracerPrefab : minigunTracerPrefab;
 
-        GameObject tracer = Instantiate(tracerPrefab, barrel.position, Quaternion.identity);
+        GameObject tracer = Instantiate(tracerPrefab, barrel.position, barrel.rotation);
 
         tracer.GetComponent<BulletTracer>().Init(endPoint);
 
@@ -66,6 +80,13 @@ public class WeaponController : MonoBehaviour, Iweapon
             Reload();
         else
             StartCoroutine(WaitFireRate());
+    }
+
+    IEnumerator FinishAttack(float time)
+    {
+        yield return new WaitForSeconds(time);
+
+        IsPlayingAction = false;
     }
 
     public void Reload()
@@ -93,6 +114,11 @@ public class WeaponController : MonoBehaviour, Iweapon
         Debug.Log(rocketMode ? "Rocket Launcher" : "Minigun");
     }
 
+    public bool IsRocketMode()
+    {
+        return rocketMode;
+    }
+
     IEnumerator WaitFireRate()
     {
         canShoot = false;
@@ -104,8 +130,10 @@ public class WeaponController : MonoBehaviour, Iweapon
     {
         Debug.Log("Reloading...");
         yield return new WaitForSeconds(currentData.reloadTime);
+
         curAmmo = currentData.maxAmmo;
         canShoot = true;
+
         Debug.Log("Reloaded!");
     }
 }

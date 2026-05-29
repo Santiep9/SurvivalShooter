@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 1034577969353671043}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 30.8, y: 103.4, z: 76}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -475,13 +475,17 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 9
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7960101357139979788, guid: f3783e715fbfb624f8fd7bf14ba4c4d2, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: -3970243614316841892, guid: f3783e715fbfb624f8fd7bf14ba4c4d2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1103014004463399901}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2107409826236812522, guid: f3783e715fbfb624f8fd7bf14ba4c4d2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1505958204277138411}
     - targetCorrespondingSourceObject: {fileID: 2107409826236812522, guid: f3783e715fbfb624f8fd7bf14ba4c4d2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8926128420642390734}
@@ -511,6 +515,30 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2107409826236812522, guid: f3783e715fbfb624f8fd7bf14ba4c4d2, type: 3}
   m_PrefabInstance: {fileID: 5486155955890697368}
   m_PrefabAsset: {fileID: 0}
+--- !u!111 &1505958204277138411
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5845034411346720882}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Animation: {fileID: -4018411851501446075, guid: f3783e715fbfb624f8fd7bf14ba4c4d2, type: 3}
+  m_Animations:
+  - {fileID: -4018411851501446075, guid: f3783e715fbfb624f8fd7bf14ba4c4d2, type: 3}
+  - {fileID: 5653429922334403762, guid: f3783e715fbfb624f8fd7bf14ba4c4d2, type: 3}
+  - {fileID: -8589401764867166068, guid: f3783e715fbfb624f8fd7bf14ba4c4d2, type: 3}
+  - {fileID: -354336378234359926, guid: f3783e715fbfb624f8fd7bf14ba4c4d2, type: 3}
+  - {fileID: 8017940123964643830, guid: f3783e715fbfb624f8fd7bf14ba4c4d2, type: 3}
+  - {fileID: -8384997094047646340, guid: f3783e715fbfb624f8fd7bf14ba4c4d2, type: 3}
+  - {fileID: 1484953680581779909, guid: f3783e715fbfb624f8fd7bf14ba4c4d2, type: 3}
+  - {fileID: 8033286913423105442, guid: f3783e715fbfb624f8fd7bf14ba4c4d2, type: 3}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_UpdateMode: 0
+  m_CullingType: 0
 --- !u!136 &8926128420642390734
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -641,10 +669,12 @@ MonoBehaviour:
   mask:
     serializedVersion: 2
     m_Bits: 320
-  currentWeapon: {fileID: 0}
-  barrel: {fileID: 0}
-  slowProjectilePrefab: {fileID: 0}
+  currentWeapon: {fileID: 1323444579241778045}
+  barrel: {fileID: 1103014004463399901}
+  slowProjectilePrefab: {fileID: 5415995751073017977, guid: cdbd65f5b331265459a9aef1adb2fe35, type: 3}
   trapPrefab: {fileID: 6179945260084325157, guid: c6325aad11c07584bbfa5d51d44fc3e1, type: 3}
+  anim: {fileID: 1505958204277138411}
+  pauseCanvas: {fileID: 3787512716356874320, guid: 3b50b78efcea19448811f2011934ade6, type: 3}
   gameData: {fileID: 11400000, guid: a2506ac2a66a5f0459c636dd336f9f88, type: 2}
   baseSpeed: 5
 --- !u!114 &1323444579241778045
@@ -661,8 +691,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minigunData: {fileID: 11400000, guid: ced9524f1ae097c409b3723338e4490b, type: 2}
   rocketData: {fileID: 11400000, guid: 052960455df18b34e80a21ada8c53768, type: 2}
+  minigunTracerPrefab: {fileID: 6188482258492802800, guid: 2e90a5f8023e9e24f8608a6ed71babae, type: 3}
+  rocketTracerPrefab: {fileID: 4301344135455315650, guid: cb7372e76e342e3469e98ee0be3b2d6e, type: 3}
   user: {fileID: 5845034411346720882}
-  barrel: {fileID: 0}
+  barrel: {fileID: 1103014004463399901}
+  anim: {fileID: 1505958204277138411}
 --- !u!54 &6808643541122572753
 Rigidbody:
   m_ObjectHideFlags: 0

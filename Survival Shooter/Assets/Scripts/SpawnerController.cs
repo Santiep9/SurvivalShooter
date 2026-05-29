@@ -1,12 +1,13 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class SpawnerController : MonoBehaviour
 {
     [SerializeField] GameObject Player;
     [SerializeField] GameObject Enemy;
     [SerializeField] float SpawnRange = 2f;
-    [SerializeField] float SpawnCooldown = 0.1f;
+    [SerializeField] float SpawnCooldown = 0.5f;
     bool stopSpawner = false;
 
     void Start()
@@ -33,9 +34,16 @@ public class SpawnerController : MonoBehaviour
     {
         float distance = Random.Range(0, SpawnRange);
         float angle = Random.Range(0, 360);
+
         Vector3 newPosition = transform.position
-        + Quaternion.Euler(0, angle, 0) * Vector3.forward * distance;
-        GameObject spawn = Instantiate(Enemy, newPosition, Quaternion.identity);
-        spawn.GetComponent<EnemyController>().SetTarget(Player);
+            + Quaternion.Euler(0, angle, 0) * Vector3.forward * distance;
+
+        NavMeshHit hit;
+
+        if (NavMesh.SamplePosition(newPosition, out hit, 5f, NavMesh.AllAreas))
+        {
+            GameObject spawn = Instantiate(Enemy, hit.position, Quaternion.identity);
+            spawn.GetComponent<EnemyController>().SetTarget(Player);
+        }
     }
 }

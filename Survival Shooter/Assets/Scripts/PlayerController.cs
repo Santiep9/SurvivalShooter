@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
@@ -37,10 +39,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform barrel;
     [SerializeField] GameObject slowProjectilePrefab;
     [SerializeField] GameObject trapPrefab;
+    [SerializeField] Animation anim;
+
+    [SerializeField] GameObject pauseCanvas;
 
     Vector3 MousePosition = new Vector3();
 
     [SerializeField] GameData gameData;
+
+    [SerializeField] float maxHealth = 500f;
+    [SerializeField] TMP_Text healthText;
+
+    float currentHealth;
 
     public float baseSpeed = 5f;
 
@@ -64,6 +74,11 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        currentHealth = maxHealth;
+        UpdateHealthUI();
+
+        anim = GetComponent<Animation>();
+
         EnemyController[] enemies = FindObjectsByType<EnemyController>(FindObjectsSortMode.None);
 
         SaveSystem.Load(gameData, gameObject, enemies);
@@ -73,6 +88,20 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (m_saveAction.WasPressedThisFrame())
+        {
+            Pause();
+            SaveAndQuit();
+        }
+
+        if (!anim.isPlaying)
+        {
+            if (agent.velocity.magnitude > 0.1f)
+                PlayRun();
+            else
+                PlayIdle();
+        }
+
         if (m_interactAction.WasPressedThisFrame())
         {
             Move();
@@ -85,11 +114,23 @@ public class PlayerController : MonoBehaviour
 
         if (m_slowShotAction.WasPressedThisFrame())
         {
+            PlaySpellW();
+
+            Instantiate(slowProjectilePrefab, barrel.position, transform.rotation);
+
+            StartCoroutine(ReturnToMovement(1f));
+
             Instantiate(slowProjectilePrefab, barrel.position, transform.rotation);
         }
 
         if (m_trapAction.WasPressedThisFrame())
         {
+            PlaySpellE();
+
+            Instantiate(trapPrefab, transform.position, Quaternion.identity);
+
+            StartCoroutine(ReturnToMovement(1f));
+
             Instantiate(trapPrefab, transform.position, Quaternion.identity);
         }
 
@@ -130,11 +171,6 @@ public class PlayerController : MonoBehaviour
             case TargetType.position:
             default:
                 break;
-        }
-
-        if (m_saveAction.WasPressedThisFrame())
-        {
-            SaveAndQuit();
         }
 
         if (m_resetAction.WasPressedThisFrame())
@@ -201,7 +237,15 @@ public class PlayerController : MonoBehaviour
         SaveSystem.Save(gameData, enemies);
 
         Debug.Log("Game Saved!");
+    }
 
+    public void CloseCanvas()
+    {
+        pauseCanvas.SetActive(false);
+    }
+
+    public void ExitGame()
+    {
         Application.Quit();
     }
 
@@ -214,5 +258,85 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Game Reset");
 
         UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+    }
+
+    void PlayIdle()
+    {
+        if (currentWeapon.IsRocketMode())
+            anim.CrossFade("Jinx_Rlauncher_idle1_anm");
+        else
+            anim.CrossFade("Idle1_Base");
+    }
+
+    void PlayRun()
+    {
+        if (currentWeapon.IsRocketMode())
+            anim.CrossFade("Jinx_Rlauncher_run.anm");
+        else
+            anim.CrossFade("Run_Base");
+    }
+
+    void PlayAttack()
+    {
+        if (currentWeapon.IsRocketMode())
+            anim.Play("Jinx_Rlauncher_attack1_anm");
+        else
+            anim.Play("Attack1");
+    }
+
+    void PlaySpellW()
+    {
+        anim.Play("Spell2");
+    }
+
+    void PlaySpellE()
+    {
+        anim.Play("Spell3");
+    }
+
+    IEnumerator ReturnToMovement(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (!currentWeapon.IsPlayingAction)
+        {
+            if (agent.velocity.magnitude > 0.1f)
+                PlayRun();
+            else
+                PlayIdle();
+        }
+    }
+
+    void Pause()
+    {
+        pauseCanvas.SetActive(true);
+    }
+
+    public void TakeDamage(float damage)
+    {
+        currentHealth -= damage;
+
+        if (currentHealth < 0)
+            currentHealth = 0;
+
+        UpdateHealthUI();
+
+        if (currentHealth <= 0)
+        {
+            currentHealth = 0;
+
+            Debug.Log("GAME OVER");
+
+            #if UNITY_EDITOR
+            EditorApplication.isPlaying = false;
+            #else
+            Application.Quit();
+            #endif
+        }
+    }
+
+    void UpdateHealthUI()
+    {
+        healthText.text = "Health: " + currentHealth + " / " + maxHealth;
     }
 }
